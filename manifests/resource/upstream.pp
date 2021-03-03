@@ -176,7 +176,7 @@ define nginx::resource::upstream (
         fail('The state "drain" is not available for upstreams with context "stream"')
       }
 
-      nginx::resource::upstream::member { $member:
+      nginx::resource::upstream::member { "${name}-${member}":
         * => $member_values,
       }
     }
