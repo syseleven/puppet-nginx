@@ -617,11 +617,16 @@ define nginx::resource::server (
 
   create_resources('::nginx::resource::map', $string_mappings)
   create_resources('::nginx::resource::geo', $geo_mappings)
-  create_resources('::nginx::resource::location', $locations, {
-      ensure   => $ensure,
-      server   => $name_sanitized,
-      ssl      => $ssl,
-      ssl_only => $ssl_only,
-      www_root => $www_root,
-  } + $locations_defaults)
+
+  $locations.each |$location,$values| {
+    nginx::resource::location { "${name_sanitized}-${location}":
+      * => {
+        ensure   => $ensure,
+        server   => $name_sanitized,
+        ssl      => $ssl,
+        ssl_only => $ssl_only,
+        www_root => $www_root,
+      } + $locations_defaults + $values,
+    }
+  }
 }
